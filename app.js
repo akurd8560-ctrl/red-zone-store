@@ -37,7 +37,7 @@
 
   let lang = localStorage.getItem("lang") || "ku";
   let all = [], view = [], shown = 0;
-  const PAGE = 40;
+  const PAGE = 900;
   const state = { q: "", type: "all", plat: "all", sort: "az" };
   let cart = [];
 
