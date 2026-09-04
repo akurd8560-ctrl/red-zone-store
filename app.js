@@ -1,23 +1,32 @@
 (() => {
-  "use strict";
+ // ڕێکخستنە شێواوەکان
+const _c = JSON.parse(
+  atob("eyJyIjoxNDcwLCJtaW4iOjIwMDAsIm1heCI6NTAwMH0=")
+  // {"r":1470,"min":2000,"max":5000}
+);
 
-  const DEFAULTS = { rate: 1400, markup: 30, wa: "9647519099593" };
-  const mem = {};
-  const store = {
-    get(k, d) {
-      if (k in mem) return mem[k];
-      try {
-        const m = document.cookie.match(new RegExp("(?:^|; )rz_" + k + "=([^;]*)"));
-        if (m) { const v = JSON.parse(decodeURIComponent(m[1])); mem[k] = v; return v; }
-      } catch (e) {}
-      return d;
-    },
-    set(k, v) {
-      mem[k] = v;
-      try { document.cookie = "rz_" + k + "=" + encodeURIComponent(JSON.stringify(v)) + ";path=/;max-age=31536000;SameSite=Lax"; } catch (e) {}
-    }
-  };
+const EXCHANGE_RATE = _c.r;
+const MIN_MARKUP = _c.min;
+const MAX_MARKUP = _c.max;
 
+// فەنکشنی هەژمارکردنی نرخ
+function calculatePriceInIQD(priceUSD) {
+  const baseIQD = priceUSD * EXCHANGE_RATE;
+
+  // هەڵبژاردنی قازانج بەپێی نرخ
+  let markup;
+  if (priceUSD <= 20) {
+    markup = MIN_MARKUP;        // بۆ یارییە هەرزانەکان
+  } else if (priceUSD >= 60) {
+    markup = MAX_MARKUP;        // بۆ یارییە گرانەکان
+  } else {
+    // نێوانیان: قازانج بەپێی ڕێژەی نرخی یاری
+    const ratio = (priceUSD - 20) / (60 - 20); // ٠ بۆ ١
+    markup = MIN_MARKUP + ratio * (MAX_MARKUP - MIN_MARKUP);
+  }
+
+  return Math.round(baseIQD + markup);
+}
   let cfg = {
     rate: Number(store.get("rate", DEFAULTS.rate)) || DEFAULTS.rate,
     markup: Number(store.get("markup", DEFAULTS.markup)) || DEFAULTS.markup,
