@@ -144,17 +144,25 @@
       </div></article>`;
   }
 
+  // ✅ UPDATED: show ALL games at once
   function render() {
-    if (!view.length && all.length) { grid.innerHTML = ""; $("#empty").hidden = false; $("#moreBtn").hidden = true; $("#resultCount").textContent = t().results(0); return; }
+    if (!view.length && all.length) {
+      grid.innerHTML = "";
+      $("#empty").hidden = false;
+      $("#moreBtn").hidden = true;
+      $("#resultCount").textContent = t().results(0);
+      return;
+    }
     $("#empty").hidden = true;
-    if (shown === 0) grid.innerHTML = "";
-    const next = view.slice(shown, shown + PAGE);
-    grid.insertAdjacentHTML("beforeend", next.map((g, k) => cardHTML(g, shown + k)).join(""));
-    shown += next.length;
+
+    if (shown === 0) {
+      // Render everything in one go
+      grid.innerHTML = view.map((g, i) => cardHTML(g, i)).join("");
+      shown = view.length;
+    }
+
     $("#resultCount").textContent = t().results(view.length);
-    const more = $("#moreBtn");
-    more.hidden = shown >= view.length;
-    more.textContent = t().more;
+    $("#moreBtn").hidden = true; // always hide "Show more"
   }
 
   function refresh() { compute(); render(); }
@@ -225,6 +233,7 @@
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") { $("#modal").hidden = true; $("#drawer").hidden = true; $("#admin").hidden = true; } });
 
+  // "Show more" button is now unused, but kept for safety
   $("#moreBtn").addEventListener("click", render);
   $("#sort").addEventListener("change", e => { state.sort = e.target.value; refresh(); });
   $("#cartBtn").addEventListener("click", () => { $("#drawer").hidden = false; });
