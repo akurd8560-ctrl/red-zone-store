@@ -1,39 +1,41 @@
+<script>
 (() => {
- // ڕێکخستنە شێواوەکان
-const _c = JSON.parse(
-  atob("eyJyIjoxNDcwLCJtaW4iOjIwMDAsIm1heCI6NTAwMH0=")
-  // {"r":1470,"min":2000,"max":5000}
-);
+  // ڕێکخستنە شێواوەکان
+  const _c = JSON.parse(
+    atob("eyJyIjoxNDcwLCJtaW4iOjIwMDAsIm1heCI6NTAwMH0=")
+    // {"r":1470,"min":2000,"max":5000}
+  );
 
-const EXCHANGE_RATE = _c.r;
-const MIN_MARKUP = _c.min;
-const MAX_MARKUP = _c.max;
+  const EXCHANGE_RATE = _c.r;
+  const MIN_MARKUP = _c.min;
+  const MAX_MARKUP = _c.max;
 
-// فەنکشنی هەژمارکردنی نرخ
-function calculatePriceInIQD(priceUSD) {
-  const baseIQD = priceUSD * EXCHANGE_RATE;
+  // فەنکشنی هەژمارکردنی نرخ
+  function calculatePriceInIQD(priceUSD) {
+    const baseIQD = priceUSD * EXCHANGE_RATE;
 
-  // هەڵبژاردنی قازانج بەپێی نرخ
-  let markup;
-  if (priceUSD <= 20) {
-    markup = MIN_MARKUP;        // بۆ یارییە هەرزانەکان
-  } else if (priceUSD >= 60) {
-    markup = MAX_MARKUP;        // بۆ یارییە گرانەکان
-  } else {
-    // نێوانیان: قازانج بەپێی ڕێژەی نرخی یاری
-    const ratio = (priceUSD - 20) / (60 - 20); // ٠ بۆ ١
-    markup = MIN_MARKUP + ratio * (MAX_MARKUP - MIN_MARKUP);
+    // هەڵبژاردنی قازانج بەپێی نرخ
+    let markup;
+    if (priceUSD <= 20) {
+      markup = MIN_MARKUP;        // بۆ یارییە هەرزانەکان
+    } else if (priceUSD >= 60) {
+      markup = MAX_MARKUP;        // بۆ یارییە گرانەکان
+    } else {
+      // نێوانیان: قازانج بەپێی ڕێژەی نرخی یاری
+      const ratio = (priceUSD - 20) / (60 - 20); // ٠ بۆ ١
+      markup = MIN_MARKUP + ratio * (MAX_MARKUP - MIN_MARKUP);
+    }
+
+    return Math.round(baseIQD + markup);
   }
 
-  return Math.round(baseIQD + markup);
-}
   let cfg = {
-    rate: Number(store.get("rate", DEFAULTS.rate)) || DEFAULTS.rate,
-    markup: Number(store.get("markup", DEFAULTS.markup)) || DEFAULTS.markup,
-    wa: String(store.get("wa", DEFAULTS.wa) || DEFAULTS.wa)
+    rate: Number(localStorage.getItem("rate")) || 1470,
+    markup: Number(localStorage.getItem("markup")) || 0,
+    wa: String(localStorage.getItem("wa") || "9647700000000")
   };
 
-  let lang = store.get("lang", "ku");
+  let lang = localStorage.getItem("lang") || "ku";
   let all = [], view = [], shown = 0;
   const PAGE = 40;
   const state = { q: "", type: "all", plat: "all", sort: "az" };
@@ -226,7 +228,7 @@ function calculatePriceInIQD(priceUSD) {
   $("#moreBtn").addEventListener("click", render);
   $("#sort").addEventListener("change", e => { state.sort = e.target.value; refresh(); });
   $("#cartBtn").addEventListener("click", () => { $("#drawer").hidden = false; });
-  $("#langBtn").addEventListener("click", () => { lang = lang === "ku" ? "en" : "ku"; store.set("lang", lang); applyLang(); });
+  $("#langBtn").addEventListener("click", () => { lang = lang === "ku" ? "en" : "ku"; localStorage.setItem("lang", lang); applyLang(); });
 
   let deb;
   $("#search").addEventListener("input", e => { clearTimeout(deb); deb = setTimeout(() => { state.q = e.target.value; refresh(); }, 180); });
@@ -239,7 +241,7 @@ function calculatePriceInIQD(priceUSD) {
     cfg.rate = Number($("#rateInput").value) || cfg.rate;
     cfg.markup = Number($("#markupInput").value) || 0;
     cfg.wa = ($("#waInput").value || cfg.wa).replace(/[^0-9]/g, "");
-    store.set("rate", cfg.rate); store.set("markup", cfg.markup); store.set("wa", cfg.wa);
+    localStorage.setItem("rate", cfg.rate); localStorage.setItem("markup", cfg.markup); localStorage.setItem("wa", cfg.wa);
     $("#admin").hidden = true;
     $("#waFooter").href = waLink("Red Zone Store");
     $("#waFooter").textContent = "WhatsApp: +" + cfg.wa;
@@ -250,9 +252,24 @@ function calculatePriceInIQD(priceUSD) {
   $("#year").textContent = new Date().getFullYear();
   $("#waFooter").href = waLink(lang === "ku" ? "سڵاو Red Zone Store 👋" : "Hello Red Zone Store 👋");
 
-  fetch("catalog.json").then(r => r.json()).then(data => {
-    all = data;
-    $("#statCount").textContent = fmt(all.length) + "+";
-    applyLang();
-  }).catch(() => { grid.innerHTML = `<p class="cart-empty">Catalog failed to load.</p>`; });
+  // 👇 Replace fetch with embedded catalog
+  // Paste your catalog.json content inside the array below:
+  all = [
+    // Example item (replace with your real catalog):
+    {
+      title: "Example Game",
+      usd: 59.99,
+      type: "Games",
+      platforms: ["Steam"],
+      genres: ["Action"],
+      img: "https://via.placeholder.com/300x400?text=Game",
+      desc: "An example game description.",
+      new: true
+    }
+    // ... paste all your catalog.json items here ...
+  ];
+
+  $("#statCount").textContent = fmt(all.length) + "+";
+  applyLang();
 })();
+</script>
