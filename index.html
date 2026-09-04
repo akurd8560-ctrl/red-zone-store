@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Red Zone Store — گەیم و کۆدی دیجیتاڵی</title>
+<meta name="description" content="Red Zone Store — فرۆشتنی کۆدی گەیم و ئەکاونت بە دیناری عێراقی، گەیاندنی خێرا لە ڕێگەی واتساپ." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0b0e'/%3E%3Cpath d='M9 24V8h8a5 5 0 0 1 0 10h-3l6 6' stroke='%23ff2038' stroke-width='2.6' fill='none' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Red Zone Store">
+      <svg class="logo" viewBox="0 0 34 34" aria-hidden="true" fill="none">
+        <path d="M4 30V4h11.5a7.5 7.5 0 0 1 .5 15H12l10 11" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="27.5" cy="7.5" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="brand-text"><b>RED ZONE</b><i>STORE</i></span>
+    </a>
+
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search" type="search" autocomplete="off" data-ku="گەڕان بۆ گەیم..." data-en="Search for a game..." placeholder="گەڕان بۆ گەیم..." />
+    </div>
+
+    <div class="header-actions">
+      <button id="langBtn" class="ghost-btn" type="button">EN</button>
+      <button id="cartBtn" class="cart-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2.2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.55L21 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.6" fill="currentColor"/><circle cx="18" cy="20" r="1.6" fill="currentColor"/></svg>
+        <span id="cartCount" class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="kicker" data-ku="گەیاندنی خێرا • کۆدی ڕەسەن • پارەدان بە دینار" data-en="Instant delivery • Genuine keys • Pay in IQD">گەیاندنی خێرا • کۆدی ڕەسەن • پارەدان بە دینار</p>
+      <h1 data-ku="گەیمەکانت بکڕە بە دیناری عێراقی" data-en="Buy your games in Iraqi Dinar">گەیمەکانت بکڕە بە دیناری عێراقی</h1>
+      <p class="hero-sub" data-ku="زیاتر لە ٨٠٠ گەیم، ئەکاونت، سەبسکرایبشن و پرۆگرام — هەمووی بە نرخی دینار و گەیاندن لە ڕێگەی واتساپ." data-en="800+ games, accounts, subscriptions and software — all priced in dinar, delivered over WhatsApp.">زیاتر لە ٨٠٠ گەیم، ئەکاونت، سەبسکرایبشن و پرۆگرام — هەمووی بە نرخی دینار و گەیاندن لە ڕێگەی واتساپ.</p>
+      <div class="hero-stats">
+        <div><b id="statCount">—</b><span data-ku="بەرهەم" data-en="products">بەرهەم</span></div>
+        <div><b>24/7</b><span data-ku="پشتگیری" data-en="support">پشتگیری</span></div>
+        <div><b data-ku="خێرا" data-en="Fast">خێرا</b><span data-ku="گەیاندن" data-en="delivery">گەیاندن</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap catalog" id="catalog">
+    <div class="filters">
+      <div class="chips" id="typeChips"></div>
+      <div class="filter-row">
+        <div class="chips" id="platChips"></div>
+        <select id="sort" class="select"></select>
+      </div>
+    </div>
+    <p class="result-count" id="resultCount"></p>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>
+      <p data-ku="هیچ ئەنجامێک نەدۆزرایەوە. وشەیەکی تر تاقی بکەرەوە." data-en="No results found. Try another keyword.">هیچ ئەنجامێک نەدۆزرایەوە.</p>
+    </div>
+    <button id="moreBtn" class="more-btn" type="button" hidden></button>
+  </section>
+
+  <section class="wrap how">
+    <h2 data-ku="چۆن کڕین دەکەیت؟" data-en="How to order">چۆن کڕین دەکەیت؟</h2>
+    <div class="steps">
+      <article><span>١</span><h3 data-ku="گەیمەکەت هەڵبژێرە" data-en="Pick your game">گەیمەکەت هەڵبژێرە</h3><p data-ku="لە کۆگای گەورەماندا بگەڕێ و زیادی بکە بۆ سەبەتە." data-en="Browse the catalog and add it to your cart.">لە کۆگای گەورەماندا بگەڕێ و زیادی بکە بۆ سەبەتە.</p></article>
+      <article><span>٢</span><h3 data-ku="پەیام بنێرە بە واتساپ" data-en="Send a WhatsApp message">پەیام بنێرە بە واتساپ</h3><p data-ku="داواکاریەکەت خۆکارانە دەنێردرێت بۆ تیمەکەمان." data-en="Your order is sent to our team automatically.">داواکاریەکەت خۆکارانە دەنێردرێت بۆ تیمەکەمان.</p></article>
+      <article><span>٣</span><h3 data-ku="پارە بدە و کۆدەکە وەربگرە" data-en="Pay and get your key">پارە بدە و کۆدەکە وەربگرە</h3><p data-ku="پارەدان بە دینار (نەقد، FIB یان زەین کاش) و کۆدەکە یەکسەر دەگات." data-en="Pay in dinar (cash, FIB or ZainCash) and receive the key instantly.">پارەدان بە دینار و کۆدەکە یەکسەر دەگات.</p></article>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <span class="brand-text small"><b>RED ZONE</b><i>STORE</i></span>
+      <p data-ku="فرۆشگای دیجیتاڵی گەیم — هەولێر، عێراق" data-en="Digital game store — Erbil, Iraq">فرۆشگای دیجیتاڵی گەیم — هەولێر، عێراق</p>
+    </div>
+    <div class="footer-links">
+      <a id="waFooter" href="#" target="_blank" rel="noopener">WhatsApp: +964 751 909 9593</a>
+      <button id="adminBtn" class="link-btn" type="button" data-ku="ڕێکخستنی نرخ" data-en="Price settings">ڕێکخستنی نرخ</button>
+    </div>
+  </div>
+  <p class="copyright">© <span id="year"></span> Red Zone Store</p>
+</footer>
+
+<!-- product modal -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <button class="close" type="button" data-close aria-label="close">✕</button>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- cart drawer -->
+<aside class="drawer" id="drawer" hidden>
+  <div class="modal-backdrop" data-cart-close></div>
+  <div class="drawer-card">
+    <header><h3 data-ku="سەبەتەی کڕین" data-en="Your cart">سەبەتەی کڕین</h3><button class="close" type="button" data-cart-close aria-label="close">✕</button></header>
+    <div id="cartItems" class="cart-items"></div>
+    <footer>
+      <div class="cart-total"><span data-ku="کۆی گشتی" data-en="Total">کۆی گشتی</span><b id="cartTotal">0 IQD</b></div>
+      <a id="cartWa" class="wa-btn" href="#" target="_blank" rel="noopener" data-ku="ناردنی داواکاری بە واتساپ" data-en="Send order on WhatsApp">ناردنی داواکاری بە واتساپ</a>
+    </footer>
+  </div>
+</aside>
+
+<!-- admin modal -->
+<div class="modal" id="admin" hidden>
+  <div class="modal-backdrop" data-admin-close></div>
+  <div class="modal-card small">
+    <button class="close" type="button" data-admin-close aria-label="close">✕</button>
+    <h3 data-ku="ڕێکخستنی نرخ" data-en="Price settings">ڕێکخستنی نرخ</h3>
+    <label data-ku="نرخی ١ دۆلار بە دینار" data-en="1 USD in dinar">نرخی ١ دۆلار بە دینار</label>
+    <input id="rateInput" type="number" min="500" step="10" />
+    <label data-ku="ڕێژەی قازانج (٪)" data-en="Markup (%)">ڕێژەی قازانج (٪)</label>
+    <input id="markupInput" type="number" min="0" step="1" />
+    <label data-ku="ژمارەی واتساپ" data-en="WhatsApp number">ژمارەی واتساپ</label>
+    <input id="waInput" type="text" />
+    <button id="saveAdmin" class="wa-btn solid" type="button" data-ku="پاشەکەوتکردن" data-en="Save">پاشەکەوتکردن</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
